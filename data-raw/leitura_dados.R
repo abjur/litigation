@@ -1,13 +1,21 @@
-load('data/processos.RData')
-load('data/assuntos.RData')
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
+library(lubridate)
+
+path <- '~/Projects/TJSP/'
+
+load(sprintf('%s/processos.RData', path))
+load(sprintf('%s/assuntos.RData', path))
 
 assuntos <- tbl_df(assuntos) %>%
   select(id = cdProcesso, assunto = deassunto)
 processos$dtMovimento <- as.Date(processos$dtMovimento)
 processos$DataDistribuicao <- as.Date(processos$DataDistribuicao)
 processos <- tbl_df(processos) %>%
-  filter(nmVara %in% c('1ª Vara Cível', '2ª Vara Cível', '3ª Vara Cível',
-                       '1ª Vara do Juizado\nEspecial Cível')) %>%
+#   filter(nmVara %in% c('1ª Vara Cível', '2ª Vara Cível', '3ª Vara Cível',
+#                        '1ª Vara do Juizado\nEspecial Cível')) %>%
   filter(Arquivado == 1) %>%
   rename(id = cdprocesso) %>%
   left_join(assuntos, 'id') %>%
@@ -24,8 +32,9 @@ processos <- tbl_df(processos) %>%
          dt_mov = dtMovimento,
          tempo = Tempo)
 
-load('data/partes.RData')
-load('data/enderecos.RData')
+load(sprintf('%s/partes.RData', path))
+load(sprintf('%s/enderecos.RData', path))
+
 enderecos <- tbl_df(enderecos) %>%
   select(id_pessoa = cdpessoa, endereco) %>%
   filter(!is.na(endereco))
@@ -54,8 +63,8 @@ partes <- tbl_df(partes) %>%
 
 save(processos, file = 'data/processos.rda', compress = 'bzip2')
 save(partes, file = 'data/partes.rda', compress = 'bzip2')
-write.csv2(processos, 'data-raw/processos.csv')
-write.csv2(partes, 'data-raw/partes.csv')
+write.csv2(processos, '~/Desktop/processos.csv')
+write.csv2(partes, '~/Desktop/partes.csv')
 
 #------------------------------------------------------------------------------
 
@@ -110,3 +119,13 @@ renda <- read.csv2('data-raw/DomicilioRenda_SP1.csv', as.is = TRUE,
          prop_1 = sal_1 / total, 
          prop_5 = sal_5 / total, 
          prop_inf = sal_inf / total)
+
+
+
+
+
+
+
+
+
+
