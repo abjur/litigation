@@ -1,10 +1,17 @@
 Package: litigation
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
-Authors@R: person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph)
+Encoding: UTF-8
+Title: Does Income Cause Litigation Project
+Version: 0.0.1.9000
+Date: 2015-06-26
+Authors@R: c(
+    person("Julio", "Trecenti", , "jtrecenti@abj.org.br", role = c("aut", "cre")),
+    person("ABJ", role = c("cph", "fnd"))
+  )
+Description: Exploratory data analysis from litigation data.
 Depends: R (>= 3.2.1)
-License: What license is it under?
+License: GPL-3 + file LICENSE
 LazyData: true
 Suggests: knitr
 VignetteBuilder: knitr
+Imports: tidyverse
+RoxygenNote: 6.0.1
