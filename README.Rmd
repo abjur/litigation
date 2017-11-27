@@ -1,51 +1,71 @@
+---
+output: github_document
+---
 
 [![Travis-CI Build Status](https://travis-ci.org/abjur/litigation.svg?branch=master)](https://travis-ci.org/abjur/litigation)
 
-Project Litigation: does income cause litigation?
-=================================================
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "figure/README-"
+)
+```
+
+# Project Litigation: does income cause litigation?
 
 This project organises code for an analysis in association with Max Planck Institute to investigate whether income cause litigation, in an jurimetric/econometric point of view.
 
 Actually, we are waiting to get some data to make the project feasible. For now, we have an exploratory data analysis from Tribunal de Justiça de São Paulo data, made in 2015.
 
-File structure
---------------
+## File structure
 
 This is actually a package, but we don't have any R function.
 
-    .
-    ├── data
-    │   ├── d_sp_map.rda - shapefile to plot a map of São Paulo
-    │   ├── educ.rda - census education data
-    │   ├── partes.rda - litigation data: plaintiff address
-    │   ├── processos.rda - litigation data: 227,664 cases
-    │   └── renda.rda - census income data
-    ├── data-raw
-    │   ├── raw files and codes to generate analytic data
-    ├── DESCRIPTION - package stuff
-    ├── LICENSE - package stuff
-    ├── litigation.Rproj - package stuff
-    ├── man - package stuff
-    ├── NAMESPACE - package stuff
-    ├── README.Rmd - this file
+```{r echo=FALSE, eval=FALSE}
+library(magrittr)
+system("tree .", intern = TRUE) %>% 
+  magrittr::extract(-length(.)) %>% 
+  paste(collapse = "\n") %>% 
+  cat()
+```
 
-Exploratory data analysis
--------------------------
+```
+.
+├── data
+│   ├── d_sp_map.rda - shapefile to plot a map of São Paulo
+│   ├── educ.rda - census education data
+│   ├── partes.rda - litigation data: plaintiff address
+│   ├── processos.rda - litigation data: 227,664 cases
+│   └── renda.rda - census income data
+├── data-raw
+│   ├── raw files and codes to generate analytic data
+├── DESCRIPTION - package stuff
+├── LICENSE - package stuff
+├── litigation.Rproj - package stuff
+├── man - package stuff
+├── NAMESPACE - package stuff
+├── README.Rmd - this file
+```
 
-``` r
+## Exploratory data analysis
+
+```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
 ### litigation data
 
-``` r
+```{r}
 data(processos, package = 'litigation')
 data(partes, package = 'litigation')
 ```
 
 #### volume by lower court
 
-``` r
+
+```{r volume, fig.width=8, fig.height=3}
 prop <- processos %>% 
   count(vara) %>% 
   mutate(prop = n / sum(n),
@@ -60,13 +80,11 @@ processos %>%
   theme_minimal(16)
 ```
 
-![](figure/README-volume-1.png)
-
 #### litigation filing date
 
--   Lines
+- Lines
 
-``` r
+```{r filing-date, fig.width=8, fig.height=3}
 processos %>%
   mutate(mes_ano = as.Date(sprintf('%d-%02d-01',
                                    lubridate::year(dt_distribuicao),
@@ -77,11 +95,9 @@ processos %>%
   theme_minimal(16)
 ```
 
-![](figure/README-filing-date-1.png)
+- Stacked
 
--   Stacked
-
-``` r
+```{r filing-date-stacked, fig.width=8, fig.height=3}
 processos %>%
   mutate(mes_ano = as.Date(sprintf('%d-%02d-01',
                                    lubridate::year(dt_distribuicao),
@@ -92,11 +108,10 @@ processos %>%
   theme_minimal(16)
 ```
 
-![](figure/README-filing-date-stacked-1.png)
 
--   Proportionally
+- Proportionally
 
-``` r
+```{r filing-date-prop, fig.width=8, fig.height=3}
 processos %>%
   mutate(mes_ano = as.Date(sprintf('%d-%02d-01',
                                    lubridate::year(dt_distribuicao),
@@ -110,13 +125,11 @@ processos %>%
   theme_minimal(16)
 ```
 
-![](figure/README-filing-date-prop-1.png)
-
 #### litigation last movement date
 
--   Lines
+- Lines
 
-``` r
+```{r last-mov, fig.width=8, fig.height=3}
 processos %>%
   mutate(mes_ano = as.Date(sprintf('%d-%02d-01',
                                    lubridate::year(dt_mov),
@@ -129,11 +142,10 @@ processos %>%
   theme_minimal(16)
 ```
 
-![](figure/README-last-mov-1.png)
+- Stacked
 
--   Stacked
 
-``` r
+```{r last-mov-stack, fig.width=8, fig.height=3}
 processos %>%
   mutate(mes_ano = as.Date(sprintf('%d-%02d-01',
                                    lubridate::year(dt_mov),
@@ -146,11 +158,10 @@ processos %>%
   theme_minimal(16)
 ```
 
-![](figure/README-last-mov-stack-1.png)
+- Proportionally
 
--   Proportionally
 
-``` r
+```{r last-mov-prop, fig.width=8, fig.height=3}
 processos %>%
   mutate(mes_ano = as.Date(sprintf('%d-%02d-01',
                                    lubridate::year(dt_mov),
@@ -166,11 +177,10 @@ processos %>%
   theme_minimal(16)
 ```
 
-![](figure/README-last-mov-prop-1.png)
-
 #### litigation time
 
-``` r
+
+```{r time, fig.width=8, fig.height=3}
 processos %>%
   filter(!is.na(tempo), tempo > 0, tempo < 3650*2) %>%
   ggplot(aes(x = tempo)) +
@@ -180,13 +190,11 @@ processos %>%
   theme_minimal(16)
 ```
 
-![](figure/README-time-1.png)
-
 #### number of litigants by case
 
 The table below shows how many cases have zero, one or more plaintiffs / defendants
 
-``` r
+```{r n-by-case, eval=FALSE}
 autor_count <- partes %>%
   filter(tipo_parte == 'autor') %>%
   group_by(id) %>%
@@ -217,17 +225,18 @@ bind_cols(aux1, aux2) %>%
   knitr::kable()
 ```
 
-|  times|   autor|     reu|
-|------:|-------:|-------:|
-|      0|  121913|  119606|
-|      1|  104900|  106131|
-|      2|     815|    1852|
-|      3|      30|      69|
-|      4|       6|       6|
+| times|  autor|    reu|
+|-----:|------:|------:|
+|     0| 121913| 119606|
+|     1| 104900| 106131|
+|     2|    815|   1852|
+|     3|     30|     69|
+|     4|      6|      6|
 
 #### litigants State (first 10 ordered by number of plaintiffs)
 
-``` r
+
+```{r litig-origin, eval=FALSE}
 partes %>%
   mutate(estado = str_sub(endereco, -2L),
          estado = ifelse(!str_detect(estado, 
@@ -240,22 +249,24 @@ partes %>%
   knitr::kable()
 ```
 
-| estado  |    autor|      reu|
-|:--------|--------:|--------:|
-| SP      |  6312911|  2062080|
-| PR      |   149824|    21460|
-| MG      |    10396|     4655|
-| (empty) |     5504|     2172|
-| DF      |     2881|     2790|
-| RJ      |     1578|     3060|
-| SC      |      974|      367|
-| PE      |      607|      289|
-| GO      |      433|      163|
-| RS      |      323|      236|
+
+|estado  |   autor|     reu|
+|:-------|-------:|-------:|
+|SP      | 6312911| 2062080|
+|PR      |  149824|   21460|
+|MG      |   10396|    4655|
+|(empty) |    5504|    2172|
+|DF      |    2881|    2790|
+|RJ      |    1578|    3060|
+|SC      |     974|     367|
+|PE      |     607|     289|
+|GO      |     433|     163|
+|RS      |     323|     236|
+
 
 ### Census data
 
-``` r
+```{r}
 data(educ, package = 'litigation')
 data(renda, package = 'litigation')
 data(d_sp_map, package = 'litigation')
@@ -263,7 +274,7 @@ data(d_sp_map, package = 'litigation')
 
 Empty city map by censitary unit
 
-``` r
+```{r census, fig.height = 8, fig.width=6, warning=FALSE, message=FALSE}
 d_sp_map %>%
   ggplot() +
   geom_map(aes(x = long, y = lat, map_id = id), map = d_sp_map,
@@ -272,11 +283,11 @@ d_sp_map %>%
   theme_minimal()
 ```
 
-![](figure/README-census-1.png)
 
 #### by education
 
-``` r
+
+```{r census-educ, fig.height = 8, fig.width=7, warning=FALSE, message=FALSE}
 d_sp_map %>%
   left_join(educ, c('id' = 'cod')) %>%
   ggplot() +
@@ -287,11 +298,10 @@ d_sp_map %>%
   ggtitle('Literacy rate')
 ```
 
-![](figure/README-census-educ-1.png)
-
 #### by income
 
-``` r
+
+```{r census-income1, fig.height = 8, fig.width=7, warning=FALSE, message=FALSE}
 # DomicílioRenda_UF.xls
 d_sp_map %>%
   left_join(renda, c('id' = 'cod')) %>%
@@ -303,9 +313,8 @@ d_sp_map %>%
   ggtitle('Less than 1 minimum salary rate')
 ```
 
-![](figure/README-census-income1-1.png)
 
-``` r
+```{r census-income2, fig.height = 8, fig.width=6, warning=FALSE, message=FALSE}
 d_sp_map %>%
   left_join(renda, c('id' = 'cod')) %>%
   ggplot() +
@@ -316,9 +325,8 @@ d_sp_map %>%
   ggtitle('Between 1 and 5 minimum salaries rate')
 ```
 
-![](figure/README-census-income2-1.png)
 
-``` r
+```{r census-income3, fig.height = 8, fig.width=6, warning=FALSE, message=FALSE}
 d_sp_map %>%
   left_join(renda, c('id' = 'cod')) %>%
   ggplot() +
@@ -328,5 +336,3 @@ d_sp_map %>%
   theme_minimal() +
   ggtitle('More than 5 minimum salaries rate')
 ```
-
-![](figure/README-census-income3-1.png)
