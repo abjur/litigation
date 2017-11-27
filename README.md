@@ -29,6 +29,19 @@ This is actually a package, but we don't have any R function.
     ├── NAMESPACE - package stuff
     ├── README.Rmd - this file
 
+Installation
+------------
+
+This package is not on CRAN (and will never be). To install it, you should run
+
+``` r
+# install.packages("devtools")
+devtools::install_github("abjur/litigation")
+```
+
+Citation
+--------
+
 Exploratory data analysis
 -------------------------
 
@@ -330,3 +343,22 @@ d_sp_map %>%
 ```
 
 ![](figure/README-census-income3-1.png)
+
+Citation
+--------
+
+To cite `litigation`, write `citation("litigation")`:
+
+    To cite package ‘litigation’ in publications use:
+
+      Julio Trecenti (2015). litigation: Does Income Cause Litigation Project. R
+      package version 0.0.1.9000.
+
+    A BibTeX entry for LaTeX users is
+
+      @Manual{,
+        title = {litigation: Does Income Cause Litigation Project},
+        author = {Julio Trecenti},
+        year = {2015},
+        note = {R package version 0.0.1.9000},
+      }
