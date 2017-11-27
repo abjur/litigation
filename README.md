@@ -39,9 +39,6 @@ This package is not on CRAN (and will never be). To install it, you should run
 devtools::install_github("abjur/litigation")
 ```
 
-Citation
---------
-
 Exploratory data analysis
 -------------------------
 
